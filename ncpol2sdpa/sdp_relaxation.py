@@ -339,14 +339,14 @@ class SdpRelaxation(Relaxation):
             chunksize = max(int(np.sqrt(len(monomialsA) * len(monomialsB) *
                                         len(monomialsA) / 2) /
                             cpu_count()), 1)
-            iter_ = pool.imap(func, ((rowA, columnA, rowB, columnB)
-                                     for rowA in range(len(monomialsA))
-                                     for rowB in range(len(monomialsB))
-                                     for columnA in range(rowA,
-                                                          len(monomialsA))
-                                     for columnB in range((rowA == columnA)*rowB,
-                                                          len(monomialsB))),
-                              chunksize)
+            iter_ = iter(pool.map(func, ((rowA, columnA, rowB, columnB)
+                                         for rowA in range(len(monomialsA))
+                                         for rowB in range(len(monomialsB))
+                                         for columnA in range(rowA,
+                                                              len(monomialsA))
+                                         for columnB in range((rowA == columnA)*rowB,
+                                                              len(monomialsB))))
+                         )
         else:
             iter_ = imap(func, ((rowA, columnA, rowB, columnB)
                                 for rowA in range(len(monomialsA))
